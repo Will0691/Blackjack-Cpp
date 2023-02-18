@@ -7,14 +7,18 @@ const int max_hand_value = 21;
 
 void Game::p_reset()
 {
-	this->m_gamedeck.reset();
+	do {
+		this->m_gamedeck.reset();
 
-	this->m_dealer_hand.reset();
-	this->p_init_dealer_hand();
+		this->m_dealer_hand.reset();
+		this->p_init_dealer_hand();
 
-	this->m_player_hand.reset();
-	this->m_player_hand.addCard(this->m_gamedeck.draw_card());
-	this->m_player_hand.addCard(this->m_gamedeck.draw_card());
+		this->m_player_hand.reset();
+		this->m_player_hand.addCard(this->m_gamedeck.draw_card());
+		this->m_player_hand.addCard(this->m_gamedeck.draw_card());
+	} 
+	//Not allowing the player to instantly win or lose without having had the chance to even do anything
+	while (this->m_player_hand.getValue() >= 21);
 }
 
 void Game::p_init_dealer_hand()
@@ -44,7 +48,7 @@ void Game::p_hit_player()
 	std::cout << "You added " << card.toString() << " to your hand" << std::endl;
 }
 
-const void Game::p_hold()
+const void Game::p_stand()
 {
 	std::cout << "Your hand: " << this->m_player_hand.toString() << std::endl;
 	std::cout << "Dealer hand: " << this->m_dealer_hand.toString() << std::endl;
@@ -68,7 +72,7 @@ const int Game::p_get_player_input()
 	while (input == 0)
 	{
 		std::cout << "What will you do?" << std::endl;
-		std::cout << "1. Hit" << '\t' << "2. Hold" << std::endl;
+		std::cout << "1. Hit" << '\t' << "2. Stand" << std::endl;
 		std::string s;
 		std::cin >> s;
 		if (s == "1") { input = 1; }
@@ -123,7 +127,7 @@ void Game::run()
 			this->p_hit_player();
 			if (this->m_player_hand.getValue() == max_hand_value)
 			{
-				std::cout << "You hit a value of 21!\nAutomatically holding now!" << std::endl;
+				std::cout << "You hit a value of 21!\nAutomatically standing now!" << std::endl;
 				input = 2;
 			} else if (this->m_player_hand.isBusted()) {
 				std::cout << "Busted!" << std::endl;
@@ -134,7 +138,7 @@ void Game::run()
 			else { break; }
 		case 2:
 			show_quit_prompt = true;
-			this->p_hold();
+			this->p_stand();
 			break;
 		default:
 			break;

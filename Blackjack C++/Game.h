@@ -15,7 +15,7 @@ class Game
 	const void p_print_hand_dealer();
 
 	void p_hit_player();
-	const void p_hold();
+	const void p_stand();
 
 	const int p_get_player_input();
 	const bool p_will_player_quit();
